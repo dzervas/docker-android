@@ -1,6 +1,4 @@
 #!/bin/bash
-set -ex
-
 BL='\033[0;34m'
 G='\033[0;32m'
 RED='\033[0;31m'
@@ -36,6 +34,7 @@ function check_emulator_status() {
 }
 
 function install_root() {
+	set -e
 	case $ROOT in
 		false|no|n|0)
 			return
@@ -50,6 +49,7 @@ function install_root() {
 }
 
 function run_adb_commands() {
+	set -e
 	printf "${G}==> ${BL}Running ADB commands${NC}\n"
 	adb shell settings put global window_animation_scale 0.0
 	adb shell settings put global transition_animation_scale 0.0
@@ -72,11 +72,13 @@ function run_adb_commands() {
 }
 
 function install_apks() {
+	set -e
 	printf "${G}==> ${BL}Installing APKs${NC}\n"
-	find / -iname "*.apk" -depth 1 -exec adb install {} \;
+	find / -maxdepth 1 -iname "*.apk" -exec adb install {} \;
 }
 
 function install_frida() {
+	set -e
 	case $RUN_FRIDA in
 		false|no|n|0)
 			return
@@ -107,8 +109,8 @@ function install_frida() {
 }
 
 check_emulator_status
-sleep 1
 install_root
+check_emulator_status
 run_adb_commands
 install_apks
 install_frida
