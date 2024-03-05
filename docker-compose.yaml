@@ -1,0 +1,13 @@
+version: "4"
+services:
+  android:
+    image: android-emulator
+    build: .
+    ports:
+      - 127.0.0.1:6080:6080/tcp # NoVNC
+      - 127.0.0.1:4723:4723 # Appium
+      - 127.0.0.1:5555:5555/tcp # ADB
+    environment:
+      - RUN_APPIUM=yes
+    devices:
+      - /dev/kvm
