@@ -56,6 +56,7 @@ ARG ANDROID_SDK_PACKAGES="${EMULATOR_PACKAGE} ${PLATFORM_VERSION} ${BUILD_TOOL} 
 # Set JAVA_HOME - SDK
 #==============================
 ENV ANDROID_SDK_ROOT=/opt/android
+ENV ANDROID_HOME=$ANDROID_SDK_ROOT
 ENV PATH "$PATH:$ANDROID_SDK_ROOT/cmdline-tools/tools:$ANDROID_SDK_ROOT/cmdline-tools/tools/bin:$ANDROID_SDK_ROOT/emulator:$ANDROID_SDK_ROOT/tools/bin:$ANDROID_SDK_ROOT/platform-tools:$ANDROID_SDK_ROOT/build-tools/${BUILD_TOOLS}"
 ENV DOCKER="true"
 
@@ -97,43 +98,40 @@ RUN curl -sL https://deb.nodesource.com/setup_20.x | bash && \
     apt-get clean && \
     rm -Rf /tmp/* && rm -Rf /var/lib/apt/lists/*
 
+# =========================
+# Install frida & objection
+# =========================
+RUN apt-get install -y python3-pip jq
+RUN pip3 install --break-system-packages frida frida-tools objection
 
 #===================
-# Alias
+# Environment
 #===================
-RUN ln -s /usr/share/novnc/vnc.html /usr/share/novnc/index.html
-ENV EMU=./start_emu.sh
-ENV EMU_HEADLESS=./start_emu_headless.sh
-ENV VNC=./start_vnc.sh
-ENV APPIUM=./start_appium.sh
-
-
-#===================
-# Ports
-#===================
-ENV APPIUM_PORT=4723 \
-    APPIUM_PLUGINS="" \
-    ENABLE_X=yes \
+ENV ENABLE_X=yes \
     RUN_FLUXBOX=yes \
     RUN_NOVNC=yes \
     RUN_APPIUM=no \
+    RUN_FRIDA=yes \
+    APPIUM_PORT=4723 \
+    APPIUM_PLUGINS="" \
     EMULATOR_FLAGS="-no-snapshot -no-audio" \
-    ROOT=no \
+    ROOT=yes \
     DISPLAY=:0.0 \
     DISPLAY_WIDTH=1024 \
     DISPLAY_HEIGHT=768 \
-    LANG=en_US.UTF-8 \
-    LANGUAGE=en_US:en \
-    LC_ALL=en_US.UTF-8
+    HTTP_PROXY_HOST="" \
+    HTTP_PROXY_PORT="" \
+    HOST_HTTP_PROXY_PORT=""
 
 #=========================
 # Copying Scripts to root
 #=========================
+RUN ln -s /usr/share/novnc/vnc.html /usr/share/novnc/index.html
 COPY . /app
 RUN chmod +x /app/*.sh
 
 #=======================
 # framework entry point
 #=======================
-EXPOSE 6080/tcp 4723/tcp 5555/tcp
-ENTRYPOINT [ "/app/entrypoint.sh" ]
+EXPOSE 6080/tcp 4723/tcp 5555/tcp 27042/tcp
+CMD [ "/app/entrypoint.sh" ]

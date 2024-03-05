@@ -3,3 +3,4 @@ test-compose.yml
 coverage
 useful
 nohup.out
+.env
