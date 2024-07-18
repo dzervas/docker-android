@@ -72,6 +72,7 @@ RUN wget https://dl.google.com/android/repository/${ANDROID_CMD} -P /tmp && \
 # Install required package using SDK manager
 #============================================
 RUN yes Y | sdkmanager --licenses
+RUN yes Y | sdkmanager --channel=3 emulator
 RUN yes Y | sdkmanager --verbose --no_https ${ANDROID_SDK_PACKAGES}
 
 #============================================

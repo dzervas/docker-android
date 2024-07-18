@@ -1,15 +1,14 @@
 version: "4"
 services:
   android:
-    image: android-emulator
     build: .
     ports:
       - 127.0.0.1:6080:6080/tcp # NoVNC
       - 127.0.0.1:4723:4723 # Appium
       - 127.0.0.1:5555:5555/tcp # ADB
       - 127.0.0.1:27042:27042/tcp # Frida
-    volumes:
-      - $TARGET_APK
+    # volumes:
+      # - $TARGET_APK
     environment:
       - RUN_APPIUM=yes
     devices:
