@@ -1,14 +1,17 @@
 version: "4"
 services:
   android:
-    build: .
+    build:
+      context: .
+      args:
+        ARCH: arm64-v8a
     ports:
       - 127.0.0.1:6080:6080/tcp # NoVNC
       - 127.0.0.1:4723:4723 # Appium
       - 127.0.0.1:5555:5555/tcp # ADB
       - 127.0.0.1:27042:27042/tcp # Frida
-    # volumes:
-      # - $TARGET_APK
+    volumes:
+      - ./shared:/shared
     environment:
       - RUN_APPIUM=yes
     devices:

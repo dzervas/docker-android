@@ -74,7 +74,7 @@ function run_adb_commands() {
 function install_apks() {
 	set -e
 	printf "${G}==> ${BL}Installing APKs${NC}\n"
-	find / -maxdepth 1 -iname "*.apk" -exec adb install {} \;
+	find /shared -maxdepth 1 -iname "*.apk" -exec adb install {} \;
 }
 
 function install_frida() {
